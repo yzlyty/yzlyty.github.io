@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/75.jpg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,Instruments,Memory-Leak," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="偶然发现自己的 ViewController 退出后没有释放，存在内存泄露，而代码量大的情况下自己找可能的 retain cycle 不太现实，于是学习了用官方的 Instruments 工具来找出代码的问题。 打开 Instruments If Instruments has access to information about your app’s source code, a leak i">
+<meta name="keywords" content="iOS,Instruments,Memory-Leak">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 开发之用 Instruments 寻找内存泄露">
+<meta property="og:url" content="http://yzlyty.github.io/2017/04/27/Use-Instruments-to-Find-Memory-Leak-in-iOS/index.html">
+<meta property="og:site_name" content="子轶的随想地">
+<meta property="og:description" content="偶然发现自己的 ViewController 退出后没有释放，存在内存泄露，而代码量大的情况下自己找可能的 retain cycle 不太现实，于是学习了用官方的 Instruments 工具来找出代码的问题。 打开 Instruments If Instruments has access to information about your app’s source code, a leak i">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1i07ercij20lc0b80u7.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1ie853daj20zp0m444d.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1ig3286pj20oq05qwf3.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iosr4xej20n30573z7.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iry3mzzj20nj03yt9c.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iyxrpfrj21190hsqce.jpg">
+<meta property="og:updated_time" content="2017-07-27T03:43:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 开发之用 Instruments 寻找内存泄露">
+<meta name="twitter:description" content="偶然发现自己的 ViewController 退出后没有释放，存在内存泄露，而代码量大的情况下自己找可能的 retain cycle 不太现实，于是学习了用官方的 Instruments 工具来找出代码的问题。 打开 Instruments If Instruments has access to information about your app’s source code, a leak i">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1ff1i07ercij20lc0b80u7.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yzlyty.github.io/2017/04/27/Use-Instruments-to-Find-Memory-Leak-in-iOS/"/>
+
+
+
+
+
+  <title>iOS 开发之用 Instruments 寻找内存泄露 | 子轶的随想地</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c7e856e0acd4db8def3a47b1435a89ed";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">子轶的随想地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">但行好事，莫问前程</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yzlyty.github.io/2017/04/27/Use-Instruments-to-Find-Memory-Leak-in-iOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="子轶">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="子轶的随想地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">iOS 开发之用 Instruments 寻找内存泄露</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T19:48:16+08:00">
+                2017-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>偶然发现自己的 ViewController 退出后没有释放，存在内存泄露，而代码量大的情况下自己找可能的 retain cycle 不太现实，于是学习了用官方的 Instruments 工具来找出代码的问题。</p>
+<h2 id="打开-Instruments"><a href="#打开-Instruments" class="headerlink" title="打开 Instruments"></a>打开 Instruments</h2><blockquote>
+<p>If Instruments has access to information about your app’s source code, a leak is reported as a class name. Otherwise, a leak is reported as a memory address, such as Malloc-size. To ensure that Instruments has access to information about your code, initiate profiling from Xcode (see Profile from Xcode) or configure a symbol mappings file (see Map Data to Source Code).</p>
+</blockquote>
+<p>上面这段话来自 Apple 官方文档<a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/FindingLeakedMemory.html#//apple_ref/doc/uid/TP40004652-CH81-SW1" target="_blank" rel="noopener">Find Memory Leaks</a>。</p>
+<a id="more"></a>
+<p>在开始之前，为了确保 Instruments 可以访问到代码从而更好地定位问题，需要在 Xcode 中执行 Profile。首先在 Xcode 中 build 或 run 最新代码，成功后选择菜单栏中的 Product-&gt;Profile（或快捷键 Cmd+I），完成后在弹出的菜单中选择 Leaks，如图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1i07ercij20lc0b80u7.jpg" alt=""></p>
+<h2 id="使用-Leaks-定位问题"><a href="#使用-Leaks-定位问题" class="headerlink" title="使用 Leaks 定位问题"></a>使用 Leaks 定位问题</h2><p>点击红色圆圈按钮，即可 luanch app，并开始录制内存使用情况。界面如图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1ie853daj20zp0m444d.jpg" alt=""></p>
+<p>默认显示 Statistics 详情面板。为了迅速筛选出感兴趣的 allocation，可以在底部输入框中输入相关关键字，例如「viewcontroller」，这样就只剩下项目相关的 view controller 了：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1ig3286pj20oq05qwf3.jpg" alt=""></p>
+<p>其中，两个需要关注的数据栏是 <code># Persistent</code> 和 <code># Transient</code>：<code># Persistent</code>表示现在在内存中各个类别的 object 的数量，正在使用内存；而 <code># Transient</code>表示存在过但是目前已被销毁的 object 的数量，其占用的内存已被释放。</p>
+<p>操作若干次后，内存分配情况如图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iosr4xej20n30573z7.jpg" alt=""></p>
+<p>可以明显地看出，<code>ConferenceViewController</code> 目前存在 4 个，释放过的个数为 0。因此该 view controller 有内存泄露。点击 type 右侧箭头（如图中所示）：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iry3mzzj20nj03yt9c.jpg" alt=""></p>
+<p>可以看到 4 个 object 的地址、大小、代码来源等信息。点击地址右侧箭头，可以进一步看到详细的引用计数变化情况。点击与项目代码相关的使引用计数增加的一行，可以看到右侧的 stack trace 信息：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1ff1iyxrpfrj21190hsqce.jpg" alt=""></p>
+<p>圈出的黑色部分，即项目的相关调用。双击最上面的一行，左侧详情面板出现了具体代码，接下来即可根据有颜色的提示找到项目的具体问题。</p>
+<p>对于示例，很显然是 <code>- (void)loadData</code> 函数出了问题。最常见的情况就是传递给将要保存的 block 中强引用了 <code>self</code>，导致 retain cycle。改为对 self 的弱引用，再重复上述步骤，可以看到反复操作后，<code># Transient</code>的数量正常增加了。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>以上是 Leaks 工具快速查找 memory leak 的一个用法，还有其他方法可以查看 allocation 情况，但在本例中对作者帮助不大，就不详细列出了。可以参考官方文献 <a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/FindingLeakedMemory.html#//apple_ref/doc/uid/TP40004652-CH81-SW1" target="_blank" rel="noopener">Find Memory Leaks</a>，和文章 <a href="https://www.raywenderlich.com/97886/instruments-tutorial-with-swift-getting-started" target="_blank" rel="noopener">Instruments Tutorial with Swift: Getting Started</a>，有更详细的用法讲解。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Instruments/" rel="tag"># Instruments</a>
+          
+            <a href="/tags/Memory-Leak/" rel="tag"># Memory-Leak</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/29/use-fmdb-to-operate-with-SQLite-in-ios-oc/" rel="next" title="在 iOS 开发中使用 FMDB 进行数据库操作">
+                <i class="fa fa-chevron-left"></i> 在 iOS 开发中使用 FMDB 进行数据库操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/04/iOS-design-pattern/" rel="prev" title="iOS 设计模式漫谈">
+                iOS 设计模式漫谈 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">子轶</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yzlyty" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/yitianyu" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开-Instruments"><span class="nav-number">1.</span> <span class="nav-text">打开 Instruments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Leaks-定位问题"><span class="nav-number">2.</span> <span class="nav-text">使用 Leaks 定位问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子轶</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

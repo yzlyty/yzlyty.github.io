@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/75.jpg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,framework,Objective-C," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="创建 framework本文使用 demo 见 JYUIAnimateDemo，效果是在页面显示扩散的圆圈。 在 Xcode 中，首先建立一个新 project，命名为 JYUIAnimate ，类别选择Cocoa Touch Framework：">
+<meta name="keywords" content="iOS,framework,Objective-C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法">
+<meta property="og:url" content="http://yzlyty.github.io/2016/11/22/create-a-framework-and-bundle-containing-resources-for-ios-oc/index.html">
+<meta property="og:site_name" content="子轶的随想地">
+<meta property="og:description" content="创建 framework本文使用 demo 见 JYUIAnimateDemo，效果是在页面显示扩散的圆圈。 在 Xcode 中，首先建立一个新 project，命名为 JYUIAnimate ，类别选择Cocoa Touch Framework：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa13tec8zjj20l80fcgn7.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa14zz3ht9j20gi07lt92.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa158y91e9g20gc091q9t.gif">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa15d5eyqvj207o04s0sx.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa1680lky2g20o00ov4qp.gif">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa17e6ont2j20l80fc3zm.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/67dd7669gw1fa17hykoerg20kz0g4gwj.gif">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa17k84orzg20kz0g4127.gif">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/67dd7669gw1fa17t5blyxg20kx0s6x6p.gif">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa17ydd1t1j20kx05zmxy.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa180s3df6j20mb09ht9s.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/67dd7669gw1fa182nx8rgj20mg09xt9t.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa185oroncg20kp0hkquc.gif">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1faykxx3r3kj20vp064gml.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa18dksl6hg20kt0hoh5x.gif">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa18f8omi6j207m038dfx.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gy1fgzkt87pr6j20nd0ag3zf.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/67dd7669gw1fa1940k46wg20hx0s47wi.gif">
+<meta property="og:updated_time" content="2017-07-27T03:41:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法">
+<meta name="twitter:description" content="创建 framework本文使用 demo 见 JYUIAnimateDemo，效果是在页面显示扩散的圆圈。 在 Xcode 中，首先建立一个新 project，命名为 JYUIAnimate ，类别选择Cocoa Touch Framework：">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/large/67dd7669gw1fa13tec8zjj20l80fcgn7.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yzlyty.github.io/2016/11/22/create-a-framework-and-bundle-containing-resources-for-ios-oc/"/>
+
+
+
+
+
+  <title>为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法 | 子轶的随想地</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c7e856e0acd4db8def3a47b1435a89ed";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">子轶的随想地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">但行好事，莫问前程</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yzlyty.github.io/2016/11/22/create-a-framework-and-bundle-containing-resources-for-ios-oc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="子轶">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="子轶的随想地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-22T17:49:41+08:00">
+                2016-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="创建-framework"><a href="#创建-framework" class="headerlink" title="创建 framework"></a>创建 framework</h2><p>本文使用 demo 见 <a href="https://github.com/yzlyty/JYUIAnimateDemo" target="_blank" rel="noopener">JYUIAnimateDemo</a>，效果是在页面显示扩散的圆圈。</p>
+<p>在 Xcode 中，首先建立一个新 project，命名为 <code>JYUIAnimate</code> ，类别选择<strong>Cocoa Touch Framework</strong>： </p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa13tec8zjj20l80fcgn7.jpg" alt="">  </p>
+<a id="more"></a>
+<p>导入所需文件<code>JYUIAnimateView.h</code>和<code>JYUIAnimateView.m</code>。默认地，文件对外不可见，此时的工程设置为（TARGETS->Build Phases->Headers）：  </p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa14zz3ht9j20gi07lt92.jpg" alt="image-2">  </p>
+<p><strong>注意</strong>上图中，<strong>Public</strong> 意味着头文件对外可见，<strong>Project</strong> 意味着头文件对工程可见而对外不可见，也就是私有。<strong>Private</strong>有些误导，其头文件仍然是暴露的。因此大多时候，将头文件放置在<strong>Public</strong>或<strong>Project</strong>中即可。  </p>
+<p>要暴露出<code>JYUIAnimateView.h</code>头文件，需要在工程中进行设置，以及在工程头文件<code>JYUIAnimate.h</code>中包含<code>JYUIAnimateView.h</code>。首先：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa158y91e9g20gc091q9t.gif" alt="image-3"></p>
+<p>相同效果的另外一种办法是在 File inspector 中设置，选择 <strong>Public</strong> 即可：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa15d5eyqvj207o04s0sx.jpg" alt="image-4"></p>
+<p>其次，在工程头文件中加入代码： </p>
+<pre><code class="Objective-C">#import &lt;JYUIAnimate/JYUIAnimateView.h&gt;
+</code></pre>
+<p>这样就可以运行 <strong>Cmd+B</strong> 来 Build framework 了。</p>
+<h2 id="使用-framework"><a href="#使用-framework" class="headerlink" title="使用 framework"></a>使用 framework</h2><p>新建一个 project，命名为<code>JYUIAnimateApp</code>。可以把上一步骤中 build 得到的 framework 包含进来，也可以直接包含工程文件（便于调试源码）。</p>
+<p>需要进行的工程设置为（TARGETS->General->Embedded Binaries）：</p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa1680lky2g20o00ov4qp.gif" alt="image-5"></p>
+<p>否则会报错：</p>
+<pre><code>dyld: Library not loaded: @rpath...
+  Referenced from: ...
+  Reason: image not found
+</code></pre><p>也可以直接将 <code>JYUIAnimate</code> 工程拖进<code>JYUIAnimateApp</code>中，此时需要额外添加进 TARGETS-&gt;Build Phases-&gt;Target Dependencies。</p>
+<p>在需要使用 framework 的代码中添加：</p>
+<pre><code>#import &lt;JYUIAnimate/JYUIAnimate.h&gt;
+</code></pre><p>即可使用对外的头文件中的内容。</p>
+<h2 id="创建适用全平台的-framework"><a href="#创建适用全平台的-framework" class="headerlink" title="创建适用全平台的 framework"></a>创建适用全平台的 framework</h2><p>在创建 framework 的时候会发现，选择不同目标（真机 / 模拟器）会生成不同的 framework，而该 framework 也只能用于真机 / 模拟器调试。这是由于不同平台的架构不同：</p>
+<ul>
+<li>arm7：用于iOS 7的较老设备</li>
+<li>arm7s：用于iPhone 5和5C</li>
+<li>arm64：64位的 ARM 处理器</li>
+<li>i386：32位模拟器</li>
+<li>x86_64：64位模拟器</li>
+</ul>
+<p>查看 framework 适用架构的命令：</p>
+<pre><code>lipo -info &lt;framework&gt;
+</code></pre><p>而选择不同目标运行时，Xcode 只会 build 需要的版本，以缩短时间。当 archive app 时，Xcode 会 build 出3种 ARM 架构适用的 framework。</p>
+<p>但是我们一般希望 framework 是通用的，也就是说可以适用于以上5种平台，这就需要做些额外的工作。</p>
+<p>在 TARGETS 处点击页面下方的 <strong>+</strong> 号以增加一个 target，选择 Cross-platform 中的 <strong>Aggregate</strong>：</p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa17e6ont2j20l80fc3zm.jpg" alt="image-6"></p>
+<p>命名为<code>JYUIAnimateAggregate</code>。再在TARGETS->Build Phases->Target Dependencies中添加：</p>
+<p><img src="http://ww3.sinaimg.cn/large/67dd7669gw1fa17hykoerg20kz0g4gwj.gif" alt="image-7"></p>
+<p>再新建一个脚本来得到通用的 framework：</p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa17k84orzg20kz0g4127.gif" alt="image-8"></p>
+<p>添加以下脚本：</p>
+<pre><code># Sets the target folders and the final
+#framework product.
+# 如果工程名称和Framework的Target名称不一样的
+#话，要自定义FMKNAME
+# 例如: FMK_NAME = &quot;MyFramework&quot;
+
+FMK_NAME=${PROJECT_NAME}
+# Install dir will be the final output to
+#the framework.
+# The following line create it in the root
+#folder of the current project.
+INSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework
+# Working dir will be deleted after the
+#framework creation.
+WRK_DIR=build
+DEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework
+SIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework
+# -configuration ${CONFIGURATION}
+# Clean and Building both architectures.
+
+# workaround for bitcode generation problem with Xcode 7.3
+unset TOOLCHAINS
+
+xcodebuild BITCODE_GENERATION_MODE=bitcode ENABLE_BITCODE=YES -configuration &quot;Release&quot; OTHER_CFLAGS=&quot;-fembed-bitcode&quot; -target &quot;${FMK_NAME}&quot; -sdk iphoneos clean build
+
+xcodebuild BITCODE_GENERATION_MODE=bitcode ENABLE_BITCODE=YES -configuration &quot;Release&quot; OTHER_CFLAGS=&quot;-fembed-bitcode&quot; -target &quot;${FMK_NAME}&quot; -sdk iphonesimulator clean build
+
+
+# Cleaning the oldest.
+if [ -d &quot;${INSTALL_DIR}&quot; ]
+then
+rm -rf &quot;${INSTALL_DIR}&quot;
+fi
+mkdir -p &quot;${INSTALL_DIR}&quot;
+cp -R &quot;${DEVICE_DIR}/&quot; &quot;${INSTALL_DIR}/&quot;
+# Uses the Lipo Tool to merge both binary
+#files (i386 + armv6/armv7) into one
+#Universal final product.
+lipo -create &quot;${DEVICE_DIR}/${FMK_NAME}&quot; &quot;${SIMULATOR_DIR}/${FMK_NAME}&quot; -output &quot;${INSTALL_DIR}/${FMK_NAME}&quot;
+rm -r &quot;${WRK_DIR}&quot;
+open &quot;${SRCROOT}/Products&quot;
+</code></pre><p>选择 scheme 为 aggregate，build 完成后，会自动打开放置通用 framework 的文件夹。</p>
+<p>再像上面步骤添加到<code>JYUIAnimateApp</code>工程中后，即可使用真机或模拟器调试。</p>
+<h2 id="创建包含资源文件的-bundle"><a href="#创建包含资源文件的-bundle" class="headerlink" title="创建包含资源文件的 bundle"></a>创建包含资源文件的 bundle</h2><p>framework 只能包含头文件和代码，而不能包含图片和 storyboard 等资源文件。这时就需要创建 bunble 来保存这些资源，以在其他工程中使用。</p>
+<p>在<code>JYUIAnimate</code> 工程中再添加一个 target（选择 macOS 中的 bundle），命名为<code>JYUIAnimateBundle</code>：</p>
+<p><img src="http://ww4.sinaimg.cn/large/67dd7669gw1fa17t5blyxg20kx0s6x6p.gif" alt="image-10"></p>
+<p>由于默认在 macOS 中使用，需要进行一些其他的设置：</p>
+<p>选择<code>JYUIAnimateBundle</code>，在 Build Settings 中搜索「base sdk」,选中该行并按下 <strong>delete</strong>，得到的结果如图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa17ydd1t1j20kx05zmxy.jpg" alt="image-11"></p>
+<p>搜索「product name」，双击编辑，将内容替换为 JYUIAnimate：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa180s3df6j20mb09ht9s.jpg" alt="image-12"></p>
+<p>搜索「hidpi」，将<strong>COMBINE_HIDPI_IMAGES</strong>设置为 <strong>NO</strong>：</p>
+<p><img src="http://ww3.sinaimg.cn/large/67dd7669gw1fa182nx8rgj20mg09xt9t.jpg" alt="image-13"></p>
+<p>下面，为了确保在 build framework 时一起 build bundle，将该 bundle 设置为 aggregate 的 target dependency。</p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa185oroncg20kp0hkquc.gif" alt="image-14"></p>
+<p>要将 bundle 文件与得到的通用 framework 放在同一路径，需要在上面的脚本底部添加：</p>
+<pre><code># Copy the resources bundle
+ditto &quot;${BUILT_PRODUCTS_DIR}/${FMK_NAME}.bundle&quot; \
+&quot;${SRCROOT}/Products/${FMK_NAME}.bundle&quot;
+</code></pre><p>如果遇到报错提示：</p>
+<pre><code>ld: -bundle and -bitcode_bundle (Xcode setting ENABLE_BITCODE=YES) cannot be used together
+</code></pre><p>需要将 bundle target 的 bitcode 选项设置为 <strong>NO</strong>：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1faykxx3r3kj20vp064gml.jpg" alt="">    </p>
+<h3 id="添加资源到-bundle"><a href="#添加资源到-bundle" class="headerlink" title="添加资源到 bundle"></a>添加资源到 bundle</h3><p>在 TARGETS 中选择<code>JYUIAnimateBundle</code>，在 Build Phases->Copy Bundle Resources 中将需要放在 bundle 中的资源添加进来：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa18dksl6hg20kt0hoh5x.gif" alt="image-15"></p>
+<p>或者在选中资源文件时，在右侧的 File inspector 中选择：</p>
+<p><img src="http://ww2.sinaimg.cn/large/67dd7669gw1fa18f8omi6j207m038dfx.jpg" alt="image-16"></p>
+<h2 id="使用-bundle"><a href="#使用-bundle" class="headerlink" title="使用 bundle"></a>使用 bundle</h2><p>将 bundle 文件也添加到<code>JYUIAnimateApp</code>工程后，拖动 bundle 文件到 Build Phases 中的 Copy Bundle Resources（如果不包含 bundle 的话）。</p>
+<p>使用<code>JYUIAnimateBundle</code>中图片的示例代码：</p>
+<pre><code>UIImage *image = [UIImage imageNamed:@&quot;1&quot; inBundle:[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@&quot;JYUIAnimate&quot; ofType: @&quot;bundle&quot;]] compatibleWithTraitCollection:nil];
+</code></pre><h2 id="上传-App-Store-报错"><a href="#上传-App-Store-报错" class="headerlink" title="上传 App Store 报错"></a>上传 App Store 报错</h2><p>以上步骤在真机上运行没有问题，但是上传 App Store 可能遇到报错：</p>
+<pre><code>ERROR ITMS-90087: &quot;Unsupported Architecture. The executable for ... contains unsupported architecture &apos;[x86_64, i386]&apos;.&quot;
+ERROR ITMS-90209: &quot;Invalid segment Alignment. The App Binary at &apos;...&apos; does not have proper segment alignment. Try rebuilding the app with the latest xcode version.&quot; 
+</code></pre><p>这是由于 framework 包含了全平台的 build，上传时需要去掉模拟器相关架构 [x86_64, i386]。解决方案参考<a href="https://stackoverflow.com/questions/30547283/submit-to-app-store-issues-unsupported-architecture-x86" target="_blank" rel="noopener">Submit to App Store issues: Unsupported Architecture x86</a>，选择 <code>JYUIAnimateApp</code> 的 target，类似之前的步骤在 Build Phases 中添加脚本：</p>
+<pre><code>APP_PATH=&quot;${TARGET_BUILD_DIR}/${WRAPPER_NAME}&quot;
+
+# This script loops through the frameworks embedded in the application and
+# removes unused architectures.
+find &quot;$APP_PATH&quot; -name &apos;*.framework&apos; -type d | while read -r FRAMEWORK
+do
+    FRAMEWORK_EXECUTABLE_NAME=$(defaults read &quot;$FRAMEWORK/Info.plist&quot; CFBundleExecutable)
+    FRAMEWORK_EXECUTABLE_PATH=&quot;$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME&quot;
+    echo &quot;Executable is $FRAMEWORK_EXECUTABLE_PATH&quot;
+
+    EXTRACTED_ARCHS=()
+
+    for ARCH in $ARCHS
+    do
+        echo &quot;Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME&quot;
+        lipo -extract &quot;$ARCH&quot; &quot;$FRAMEWORK_EXECUTABLE_PATH&quot; -o &quot;$FRAMEWORK_EXECUTABLE_PATH-$ARCH&quot;
+        EXTRACTED_ARCHS+=(&quot;$FRAMEWORK_EXECUTABLE_PATH-$ARCH&quot;)
+    done
+
+    echo &quot;Merging extracted architectures: ${ARCHS}&quot;
+    lipo -o &quot;$FRAMEWORK_EXECUTABLE_PATH-merged&quot; -create &quot;${EXTRACTED_ARCHS[@]}&quot;
+    rm &quot;${EXTRACTED_ARCHS[@]}&quot;
+
+    echo &quot;Replacing original executable with thinned version&quot;
+    rm &quot;$FRAMEWORK_EXECUTABLE_PATH&quot;
+    mv &quot;$FRAMEWORK_EXECUTABLE_PATH-merged&quot; &quot;$FRAMEWORK_EXECUTABLE_PATH&quot;
+
+done
+</code></pre><p><strong>注意</strong>：需要勾选下面的选项，如图所示</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gy1fgzkt87pr6j20nd0ag3zf.jpg" alt=""></p>
+<p>问题解决。</p>
+<p>另外一种报错信息为：</p>
+<pre><code>ERROR ITMS-90166: &quot;Missing Code Signing Entitlements. No entitlements found in bundle &apos;...&apos; for executable &apos;...&apos;.&quot;
+</code></pre><p>解决方法：右击 bundle 文件-&gt;显示包文件，找到 <code>info.plist</code> 文件，有 <code>Executable file</code> 一行，删除。如果有个可执行文件并且遇到报错：</p>
+<pre><code>ERROR ITMS-90171: &quot;Invalid Bundle Structure - The binary file &apos;...&apos; is not permitted. Your app can&apos;t contain standalone executables or libraries, other than the CFBundleExecutable of supported bundles.&quot; 
+</code></pre><p>把该报错的可执行文件删除即可。</p>
+<p>最后附上 demo  的运行效果图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/67dd7669gw1fa1940k46wg20hx0s47wi.gif" alt="image-17"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+            <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/28/build-a-new-blog-using-hexo-and-github/" rel="next" title="利用Hexo和GitHub搭建博客的最简单步骤">
+                <i class="fa fa-chevron-left"></i> 利用Hexo和GitHub搭建博客的最简单步骤
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/29/use-fmdb-to-operate-with-SQLite-in-ios-oc/" rel="prev" title="在 iOS 开发中使用 FMDB 进行数据库操作">
+                在 iOS 开发中使用 FMDB 进行数据库操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">子轶</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yzlyty" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/yitianyu" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-framework"><span class="nav-number">1.</span> <span class="nav-text">创建 framework</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-framework"><span class="nav-number">2.</span> <span class="nav-text">使用 framework</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建适用全平台的-framework"><span class="nav-number">3.</span> <span class="nav-text">创建适用全平台的 framework</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建包含资源文件的-bundle"><span class="nav-number">4.</span> <span class="nav-text">创建包含资源文件的 bundle</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加资源到-bundle"><span class="nav-number">4.1.</span> <span class="nav-text">添加资源到 bundle</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-bundle"><span class="nav-number">5.</span> <span class="nav-text">使用 bundle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传-App-Store-报错"><span class="nav-number">6.</span> <span class="nav-text">上传 App Store 报错</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子轶</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

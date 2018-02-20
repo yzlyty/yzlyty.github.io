@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/75.jpg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/75.jpg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="blog,Hexo," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近根据网上的教程，利用Hexo和GitHub搭建了自己的博客，准备记录下以后学习成长的点点滴滴。这篇博客总结了搭建博客的最简单步骤，安装环境为macOS 10.12。 准备工作注册GitHub账号首先需要注册GitHub的账号，假定用户名是username，新建一个repository，命名为username.github.io。 安装homebrew、Git和Node.js安装homebrew">
+<meta name="keywords" content="blog,Hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Hexo和GitHub搭建博客的最简单步骤">
+<meta property="og:url" content="http://yzlyty.github.io/2016/10/28/build-a-new-blog-using-hexo-and-github/index.html">
+<meta property="og:site_name" content="子轶的随想地">
+<meta property="og:description" content="最近根据网上的教程，利用Hexo和GitHub搭建了自己的博客，准备记录下以后学习成长的点点滴滴。这篇博客总结了搭建博客的最简单步骤，安装环境为macOS 10.12。 准备工作注册GitHub账号首先需要注册GitHub的账号，假定用户名是username，新建一个repository，命名为username.github.io。 安装homebrew、Git和Node.js安装homebrew">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-21T11:13:01.155Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用Hexo和GitHub搭建博客的最简单步骤">
+<meta name="twitter:description" content="最近根据网上的教程，利用Hexo和GitHub搭建了自己的博客，准备记录下以后学习成长的点点滴滴。这篇博客总结了搭建博客的最简单步骤，安装环境为macOS 10.12。 准备工作注册GitHub账号首先需要注册GitHub的账号，假定用户名是username，新建一个repository，命名为username.github.io。 安装homebrew、Git和Node.js安装homebrew">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yzlyty.github.io/2016/10/28/build-a-new-blog-using-hexo-and-github/"/>
+
+
+
+
+
+  <title>利用Hexo和GitHub搭建博客的最简单步骤 | 子轶的随想地</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c7e856e0acd4db8def3a47b1435a89ed";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">子轶的随想地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">但行好事，莫问前程</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yzlyty.github.io/2016/10/28/build-a-new-blog-using-hexo-and-github/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="子轶">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="子轶的随想地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">利用Hexo和GitHub搭建博客的最简单步骤</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-28T20:27:11+08:00">
+                2016-10-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近根据网上的教程，利用<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>和<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>搭建了自己的博客，准备记录下以后学习成长的点点滴滴。这篇博客总结了搭建博客的最简单步骤，安装环境为macOS 10.12。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="注册GitHub账号"><a href="#注册GitHub账号" class="headerlink" title="注册GitHub账号"></a>注册GitHub账号</h3><p>首先需要注册<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>的账号，假定用户名是<code>username</code>，新建一个repository，命名为<code>username.github.io</code>。</p>
+<h3 id="安装homebrew、Git和Node-js"><a href="#安装homebrew、Git和Node-js" class="headerlink" title="安装homebrew、Git和Node.js"></a>安装homebrew、Git和Node.js</h3><p>安装<a href="http://brew.sh/" target="_blank" rel="noopener">homebrew</a>：</p>
+<pre><code>$ /usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
+</code></pre><p>安装<a href="http://git-scm.com/" target="_blank" rel="noopener">Git</a>：</p>
+<pre><code>$ brew install git
+</code></pre><p>安装<a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js</a>：</p>
+<pre><code>$ brew install node
+</code></pre><p>这一步有个小插曲（如果安装顺利可以忽略），在公司网速很快以及梯子具备的情况下， 安装 Node.js 之前需要安装的管理工具 npm 一直下载不成功，而用浏览器下载同样的内容很快下载完毕（<code>npm-3.10.3.tgz</code>，大概3M+）。因此一种曲线救国的方法是，在命令行输出内容中找到下载内容的路径（我的是 <code>~/Library/Caches/Homebrew/</code>），打开该路径找到未下载成功的文件（<code>node--npm-3.10.3.tgz.incomplete</code>），将该文件替换为 <code>npm-3.10.3.tgz</code> 并重命名为 <code>node--npm-3.10.3.tgz</code> ，再次尝试即安装成功。</p>
+<a id="more"></a>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>准备好上述工具后，即可安装Hexo：</p>
+<pre><code>$ npm install hexo-cli -g
+</code></pre><p>然后进入准备好的目录，例如<code>.../Hexo/</code>，执行命令：</p>
+<pre><code>$ hexo init
+$ npm install
+</code></pre><p>这样Hexo博客就在本地搭建完成了，可以在本地浏览（<code>Ctrl+C</code>退出）：</p>
+<pre><code>$ hexo server
+</code></pre><p>在浏览器打开<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a>查看。</p>
+<h2 id="部署到GitHub"><a href="#部署到GitHub" class="headerlink" title="部署到GitHub"></a>部署到GitHub</h2><p>首先需要安装部署所需插件：</p>
+<pre><code>$ npm install hexo-deployer-git --save
+</code></pre><p>为自己配置Git身份信息，执行命令：</p>
+<pre><code>$ git config --global user.name &quot;username&quot;
+$ git config --global user.email &quot;user email&quot;
+</code></pre><p>再打开<code>.../Hexo/</code>目录下的<code>_config.yml</code>文件（推荐编辑器<a href="https://www.sublimetext.com/" target="_blank" rel="noopener">Sublime Text</a>），修改以下内容（注意将<code>username</code>替换为自己的用户名）：</p>
+<pre><code>deploy:
+  type: git
+  repository: https://github.com/username/username.github.io
+  branch: master
+</code></pre><p>之后可以通过以下命令将本地博客文件部署到GitHub：</p>
+<pre><code>$ hexo deploy
+</code></pre><p>按照提示输入自己的GitHub账号用户名和密码。部署完成后，就可以访问<a href="http://username.github.io" target="_blank" rel="noopener">http://username.github.io</a>查看自己的博客了。</p>
+<h2 id="发表新文章"><a href="#发表新文章" class="headerlink" title="发表新文章"></a>发表新文章</h2><p>在<code>.../Hexo/</code>目录下通过执行命令来新建<code>.md</code>文件：</p>
+<pre><code>$ hexo n &quot;my-new-post&quot;
+</code></pre><p>新建的文件位于<code>.../Hexo/source/_posts/</code>，推荐使用编辑器<a href="https://ulyssesapp.com/" target="_blank" rel="noopener">ulysses</a>打开该文件，在开头处需要配置以下内容格式：</p>
+<pre><code>title: 新文章 #可以改成中文 
+date: 2014-05-06
+categories: blog #文章分类 
+tags: [博客,blog] #文章标签，多于一项时用这种格式
+---
+#这里是正文，用Markdown写
+</code></pre><p>再通过以下命令发布：</p>
+<pre><code>$ hexo d -g
+</code></pre><h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><h3 id="配置Hexo"><a href="#配置Hexo" class="headerlink" title="配置Hexo"></a>配置Hexo</h3><p>修改<code>.../Hexo/</code>目录下的<code>_config.yml</code>文件可以更改Hexo的配置，可以使用<a href="http://www.yamllint.com/" target="_blank" rel="noopener">yamllint</a>来保证自己的yaml语法正确。</p>
+<p>具体参数及含义见<a href="https://hexo.io/docs/configuration.html" target="_blank" rel="noopener">https://hexo.io/docs/configuration.html</a>，也可以参考<a href="http://www.jianshu.com/p/f935e5459c49" target="_blank" rel="noopener">http://www.jianshu.com/p/f935e5459c49</a>。</p>
+<h3 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h3><p>官网主题：<a href="https://hexo.io/themes/" target="_blank" rel="noopener">https://hexo.io/themes/</a></p>
+<p>更多主题：<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="noopener">https://github.com/hexojs/hexo/wiki/Themes</a></p>
+<p>本博客主题为<a href="https://github.com/iissnan/hexo-theme-next/blob/master/README.cn.md" target="_blank" rel="noopener">NexT</a></p>
+<p>更改主题后，执行以下命令发布：</p>
+<pre><code>$ hexo clean
+$ hexo g
+$ hexo d
+</code></pre><h3 id="其他推荐"><a href="#其他推荐" class="headerlink" title="其他推荐"></a>其他推荐</h3><p>在线制作网站logo的网站：<a href="http://www.atool.org/ico.php" target="_blank" rel="noopener">http://www.atool.org/ico.php</a></p>
+<p>Markdown语法学习：<a href="http://www.jianshu.com/p/q81RER" target="_blank" rel="noopener">http://www.jianshu.com/p/q81RER</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/blog/" rel="tag"># blog</a>
+          
+            <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/22/create-a-framework-and-bundle-containing-resources-for-ios-oc/" rel="prev" title="为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法">
+                为 iOS 创建动态 framework 和包含资源文件的 bundle 的方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">子轶</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yzlyty" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/yitianyu" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册GitHub账号"><span class="nav-number">1.1.</span> <span class="nav-text">注册GitHub账号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装homebrew、Git和Node-js"><span class="nav-number">1.2.</span> <span class="nav-text">安装homebrew、Git和Node.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署到GitHub"><span class="nav-number">3.</span> <span class="nav-text">部署到GitHub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发表新文章"><span class="nav-number">4.</span> <span class="nav-text">发表新文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶"><span class="nav-number">5.</span> <span class="nav-text">进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Hexo"><span class="nav-number">5.1.</span> <span class="nav-text">配置Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更换主题"><span class="nav-number">5.2.</span> <span class="nav-text">更换主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他推荐"><span class="nav-number">5.3.</span> <span class="nav-text">其他推荐</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子轶</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
